@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ajax 2 - Text title </title>
+</head>
+<body>
+    <button id="button">Get Text File</button>
+    <div id = "response">
+    </div>
+    
+    <script>
+        //Create event listener
+        document.getElementById('button').addEventListener(
+            'click', loadText);
+
+        function loadText(){
+            console.log('button clicked')
+            //Create XHR object
+            var xhr = new XMLHttpRequest();
+            // Open - type, url/file, async
+            
+            console.log(xhr);
+            xhr.open('GET', 'sample1.txt', true);
+            console.log("Ready State : " + xhr.readyState);
+            
+
+            // ready state values
+            // 0 : request not initialized.
+            // 1 : server connection established.
+            // 2 : request received.
+            // 3 : processing request.
+            // 4 : request finished and response is ready.
+
+            xhr.onprogress = function(){
+                console.log("On-Progress State : " + xhr.readyState);
+            }
+
+            xhr.onreadystatechange = function(){
+                console.log("Ready State : " + xhr.readyState);
+
+                if (this.readyState == 4 && this.status == 200){
+                    var response = document.getElementById("response");
+                    var para = document.createElement("p");
+                    var text = this.responseText;
+                    var node = document.createTextNode(text);
+                    para.appendChild(node);
+                    response.appendChild(para);
+                }
+                else if(this.readyState == 4 && this.status == 404){
+                    var response = document.getElementById("response");
+                    var para = document.createElement("p");
+                    var text = "Text file not found";           
+                    var node = document.createTextNode(text);
+                    para.appendChild(node);
+                    response.appendChild(para);
+                }
+            }
+
+            xhr.onerror = function(){
+                console.log("Use if there is error....")
+            }
+            
+            xhr.send()
+            
+        }
+    </script>
+</body>
+</html>
