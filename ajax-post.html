@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <title>Ajax 3 - Local Json </title>
+</head>
+<body>
+    <button id="button1">Get User</button>
+    <button id="button2">Get Users</button>
+
+    <form id="getForm">
+        <p>AJAX GET Form</p>
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name">
+        <br>
+
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email">
+        <br>
+
+        <select name="gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="None">Not to mention</option>
+        </select>
+
+
+
+        <input type="submit" value="submit">
+        
+    </form>
+
+
+    <form id="postForm">
+            <p>AJAX POST Form</p>
+            <label for="name1">Name</label>
+            <input type="text" name="name1" id="name1">
+            <br>
+    
+            <label for="email1">Email</label>
+            <input type="text" name="email1" id="email1">
+            <br>
+    
+            <select name="gender1" id="gender1">
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                    <option value="3">Not to mention</option>
+            </select>
+    
+    
+    
+            <input type="submit" value="submit">
+            
+        </form>
+
+    <br>
+
+    <div id="users">
+        
+    </div>
+
+    <script>
+        //Create event listener
+        document.getElementById('button2').addEventListener(
+            'click', loadUsers);
+
+        document.getElementById('getForm').addEventListener(
+            'submit', getName);
+
+        document.getElementById('postForm').addEventListener(
+            'submit', postName);
+
+        function getName(e){
+            e.preventDefault();
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://127.0.0.1:5000/', true);
+
+            xhr.onload = function(){
+                if(this.status == 200){
+                    console.log("Get request called");
+                    console.log(xhr.responseText);       
+                }
+            }
+
+            xhr.send();
+        }
+
+        function postName(e){
+            e.preventDefault();
+
+            var name = document.getElementById('name1').value;
+            var email = document.getElementById('email1').value;
+            var gender = document.getElementById('gender1').value;
+
+            var params = "name=" + name + "&email=" + email + "&gender=" + gender;
+            //var params = new FormData();
+            //params.append('name', name);
+            //params.append('email', email);
+            //params.append('gender', gender);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:5000/post', true);
+            xhr.setRequestHeader('Content-type', 
+            'application/x-www-form-urlencoded');
+
+            xhr.onload = function(){
+                if(this.status == 200){
+                    console.log("Post request called");
+                    console.log(xhr.responseText);       
+                }
+            }
+
+            xhr.send(params);
+        }
+
+        function loadUsers(){
+            console.log('button clicked')
+            //Create XHR object
+            var xhr = new XMLHttpRequest();
+            // Open - type, url/file, async
+            
+            console.log(xhr);
+            xhr.open('GET', 'MOCK_DATA.json', true);
+            
+            xhr.onload = function(){
+                if(this.status == 200){
+                    var json = JSON.parse(this.responseText);
+                    var users = document.getElementById("users")
+                    
+                    for (var i = 0; i < json.length; i++){
+                
+                        var card = '<div class="card user" style="width: 18rem;"' + 'id=' + i + '>' + '<div class="card-body">' + '<h5 class="card-title" id="firstName">' + json[i].first_name + '</h5>' + 
+                                '<h6 class="card-subtitle mb-2 text-muted" id="lastName">'+json[i].last_name +'</h6>' + 
+                                '<p class="card-text" id="email">' + json[i].email + '</p>' + 
+                                '<p class="card-text" id="gender">' + json[i].gender + '</p>' + 
+                                '</div>' + '</div>';
+                        users.innerHTML += card;
+                    }
+                    
+                }
+            }  
+            xhr.send()    
+        }
+    </script>
+</body>
+</html>
